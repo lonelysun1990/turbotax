@@ -86,6 +86,29 @@ def plot_calibration(
   return fig
 
 
+def plot_policy_ope(results: pd.DataFrame) -> plt.Figure:
+  """Bar chart of doubly robust policy value estimates with bootstrap CIs."""
+  fig, ax = plt.subplots(figsize=(8, 4))
+  x = np.arange(len(results))
+  ax.bar(
+    x,
+    results["dr_auth_rate"],
+    yerr=[
+      results["dr_auth_rate"] - results["dr_ci_lower"],
+      results["dr_ci_upper"] - results["dr_auth_rate"],
+    ],
+    capsize=4,
+    color="steelblue",
+    edgecolor="white",
+  )
+  ax.set_xticks(x)
+  ax.set_xticklabels(results.index, rotation=15, ha="right")
+  ax.set_ylabel("Estimated auth rate")
+  ax.set_title("Offline Policy Evaluation (Doubly Robust, 95% CI)")
+  fig.tight_layout()
+  return fig
+
+
 def plot_uplift_distribution(recommendations: pd.DataFrame) -> plt.Figure:
   """Histogram of predicted uplift on validation sessions."""
   fig, ax = plt.subplots(figsize=(8, 4))
